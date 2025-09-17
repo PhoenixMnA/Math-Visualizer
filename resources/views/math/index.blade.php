@@ -36,6 +36,12 @@
 
       <button type="submit" class="px-4 py-2 rounded bg-green-600 text-white">📈 Plot</button>
     </form>
+    <!-- Results Panel -->
+    <div id="resultsBox" class="p-4 border rounded bg-gray-100 dark:bg-gray-800 dark:border-gray-700">
+      <h2 class="text-lg font-semibold mb-2">📝 Results</h2>
+      <ul id="resultsList" class="list-disc pl-5 space-y-1"></ul>
+    </div>
+  </div>
 
     <!-- Graphs -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -49,178 +55,167 @@
       </div>
     </div>
 
-    <!-- Results Panel -->
-    <div id="resultsBox" class="p-4 border rounded bg-gray-100 dark:bg-gray-800 dark:border-gray-700">
-      <h2 class="text-lg font-semibold mb-2">📝 Results</h2>
-      <ul id="resultsList" class="list-disc pl-5 space-y-1"></ul>
-    </div>
-  </div>
+    
 
   <script>
-    let darkMode = false;
-    const xValues = [];
-    for (let i = -10; i <= 10; i++) xValues.push(i);
+   // --- START: Corrected JavaScript Block ---
 
-    // Process calculus/algebra
-   // Process calculus/algebra and return a plottable expression
-function processEquation(eq) {
-  try {
-    // Derivative
-    if (eq.startsWith("derivative(")) {
-      const parsed = /derivative\((.*),\s*(\w)\)/.exec(eq);
-      if (parsed) {
-        const expr = parsed[1];
-        const variable = parsed[2];
-        const derivative = math.derivative(expr, variable).toString();
-        addResult(`Derivative of ${expr} wrt ${variable} = ${derivative}`);
-        return derivative; // now plottable
-      }
-    }
+  let darkMode = true;
+  const xValues = [];
+  for (let i = -10; i <= 10; i += 0.5) xValues.push(i); // Increased resolution
 
-    // Integral
-    if (eq.startsWith("integral(")) {
-      const parsed = /integral\((.*),\s*(\w)\)/.exec(eq);
-      if (parsed) {
-        const expr = parsed[1];
-        const variable = parsed[2];
-        const integral = math.integral(expr, variable).toString();
-        addResult(`Integral of ${expr} wrt ${variable} = ${integral}`);
-        return integral; // plottable
-      }
-    }
-
-    // Simplify
-    if (eq.startsWith("simplify(")) {
-      const parsed = /simplify\((.*)\)/.exec(eq);
-      if (parsed) {
-        const simplified = math.simplify(parsed[1]).toString();
-        addResult(`Simplify ${parsed[1]} = ${simplified}`);
-        return simplified; // plottable
-      }
-    }
-
-    return eq; // default (no processing)
-  } catch (err) {
-    console.error("Process error:", err);
-    addResult(`⚠️ Error processing "${eq}"`);
-    return null;
-  }
-}
-
-
-    function plotEquations(equations) {
-  const datasets2D = [];
-  const datasets3D = [];
-  document.getElementById("resultsList").innerHTML = ""; // clear results
-
-  equations.forEach(eq => {
-    const processed = processEquation(eq);
-    if (!processed) return;
-
+  // Process calculus/algebra and return a plottable expression
+  function processEquation(eq) {
     try {
-      // Decide if equation has 'y' in it
-      const hasY = /(^|[^a-zA-Z])y([^a-zA-Z]|$)/.test(processed);
-
-      if (!hasY) {
-        // 2D Plot (only in terms of x)
-        const yValues = xValues.map(x => {
-          const val = math.evaluate(processed, { x });
-          return Number.isFinite(val) ? val : null;
-        });
-        datasets2D.push({
-          x: xValues,
-          y: yValues,
-          mode: "lines",
-          name: eq
-        });
-      }
-
-      // 3D Plot (for any expression)
-      const yValues3D = [...xValues];
-      const zValues = [];
-      for (let xi of xValues) {
-        const row = [];
-        for (let yi of yValues3D) {
-          let z;
-          try {
-            z = math.evaluate(processed, { x: xi, y: yi });
-          } catch {
-            z = null;
-          }
-          row.push(Number.isFinite(z) ? z : null);
+      // Derivative (using math.js)
+      if (eq.startsWith("derivative(")) {
+        const parsed = /derivative\((.*),\s*(\w)\)/.exec(eq);
+        if (parsed) {
+          const expr = parsed[1];
+          const variable = parsed[2];
+          const derivative = math.derivative(expr, variable).toString();
+          addResult(`Derivative of ${expr} wrt ${variable} = ${derivative}`);
+          return derivative;
         }
-        zValues.push(row);
       }
-      datasets3D.push({
-        z: zValues,
-        x: xValues,
-        y: yValues3D,
-        type: "surface",
-        opacity: 0.8,
-        name: eq
-      });
 
+      // Integral (FIXED: using nerdamer.js)
+      if (eq.startsWith("integral(")) {
+        const parsed = /integral\((.*),\s*(\w)\)/.exec(eq);
+        if (parsed) {
+          const expr = parsed[1];
+          const variable = parsed[2];
+          // Use nerdamer for symbolic integration
+          const integral = nerdamer.integrate(expr, variable).toString();
+          addResult(`Integral of ${expr} wrt ${variable} = ${integral} + C`);
+          return integral; // Return without "+ C" for plotting
+        }
+      }
+
+      // Simplify (using math.js)
+      if (eq.startsWith("simplify(")) {
+        const parsed = /simplify\((.*)\)/.exec(eq);
+        if (parsed) {
+          const simplified = math.simplify(parsed[1]).toString();
+          addResult(`Simplify ${parsed[1]} = ${simplified}`);
+          return simplified;
+        }
+      }
+
+      return eq; // default (no processing)
     } catch (err) {
-      console.error("Plot error:", err);
-      addResult(`⚠️ Error plotting "${eq}"`);
+      console.error("Process error:", err);
+      addResult(`⚠️ Error processing "${eq}": ${err.message}`);
+      return null;
     }
-  });
+  }
 
-  // 2D
-  Plotly.newPlot("plot2D", datasets2D, {
-    title: "2D Plot",
-    paper_bgcolor: darkMode ? "#111827" : "#ffffff",
-    plot_bgcolor: darkMode ? "#111827" : "#ffffff",
-    font: { color: darkMode ? "#f3f4f6" : "#111827" }
-  });
+  function plotEquations(equations) {
+    const datasets2D = [];
+    const datasets3D = [];
+    document.getElementById("resultsList").innerHTML = ""; // clear results
 
-  // 3D
-  Plotly.newPlot("plot3D", datasets3D, {
-    title: "3D Plot",
-    paper_bgcolor: darkMode ? "#111827" : "#ffffff",
-    plot_bgcolor: darkMode ? "#111827" : "#ffffff",
-    font: { color: darkMode ? "#f3f4f6" : "#111827" }
-  });
-}
+    equations.forEach(eq => {
+      const processed = processEquation(eq);
+      if (!processed) return;
 
-    // Add to results panel
-    function addResult(text) {
-      const li = document.createElement("li");
-      li.textContent = text;
-      document.getElementById("resultsList").appendChild(li);
-    }
+      try {
+        // Decide if equation has 'y' in it
+        const is3D = /(^|[^a-zA-Z])y([^a-zA-Z]|$)/.test(processed);
 
-    // Default
-    plotEquations(["x^2"]);
+        // FIXED: Use if/else for plotting
+        if (is3D) {
+          // 3D Plot (only for expressions with 'y')
+          const yValues3D = [...xValues];
+          const zValues = [];
+          for (let xi of xValues) {
+            const row = [];
+            for (let yi of yValues3D) {
+              let z;
+              try {
+                z = math.evaluate(processed, { x: xi, y: yi });
+              } catch { z = null; }
+              row.push(Number.isFinite(z) ? z : null);
+            }
+            zValues.push(row);
+          }
+          datasets3D.push({
+            z: zValues, x: xValues, y: yValues3D,
+            type: "surface", name: eq
+          });
+        } else {
+          // 2D Plot (for expressions with only 'x')
+          const yValues = xValues.map(x => {
+            const val = math.evaluate(processed, { x });
+            return Number.isFinite(val) ? val : null;
+          });
+          datasets2D.push({
+            x: xValues, y: yValues,
+            mode: "lines", name: eq
+          });
+        }
+      } catch (err) {
+        console.error("Plot error:", err);
+        addResult(`⚠️ Error plotting "${eq}": ${err.message}`);
+      }
+    });
+
+    const layout = {
+      paper_bgcolor: darkMode ? "#1f2937" : "#ffffff",
+      plot_bgcolor: darkMode ? "#1f2937" : "#ffffff",
+      font: { color: darkMode ? "#f3f4f6" : "#111827" }
+    };
+
+    Plotly.newPlot("plot2D", datasets2D, { ...layout, title: "2D Plot" });
+    Plotly.newPlot("plot3D", datasets3D, { ...layout, title: "3D Plot" });
+  }
+
+  // Add to results panel
+  function addResult(text) {
+    const li = document.createElement("li");
+    li.textContent = text;
+    document.getElementById("resultsList").appendChild(li);
+  }
+
+  // --- Event Listeners ---
+  document.addEventListener("DOMContentLoaded", () => {
+    // Initial plot on page load
+    const initialEqs = document.getElementById("equation").value.split(",").map(e => e.trim()).filter(e => e);
+    plotEquations(initialEqs);
 
     // Submit form
-    document.getElementById("equationForm").addEventListener("submit", e => {
-      e.preventDefault();
-      const eqInput = document.getElementById("equation").value;
-      const eqs = eqInput.split(",").map(e => e.trim()).filter(e => e);
-      plotEquations(eqs);
-    });
-
-    // Examples dropdown
-    document.getElementById("examples").addEventListener("change", function () {
-      if (this.value) {
-        document.getElementById("equation").value += (document.getElementById("equation").value ? ", " : "") + this.value;
-      }
-    });
+   // Submit form
+document.getElementById("equationForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const eqInput = document.getElementById("equation").value;
+  
+  // ✅ FIXED: This regex splits by commas but ignores commas inside parentheses.
+  const eqs = eqInput.split(/,\s*(?![^()]*\))/).map(e => e.trim()).filter(e => e);
+  
+  plotEquations(eqs);
+});
 
     // Dark mode toggle
     document.getElementById("darkToggle").addEventListener("click", () => {
       darkMode = !darkMode;
-      document.body.classList.toggle("dark");
+      document.body.classList.toggle("dark", darkMode);
+      document.getElementById("darkToggle").textContent = darkMode ? "☀️ Light" : "🌙 Dark";
       const eqs = document.getElementById("equation").value.split(",").map(e => e.trim()).filter(e => e);
-      plotEquations(eqs);
+      plotEquations(eqs); // Redraw plots with new theme
     });
 
     // Reset
     document.getElementById("resetBtn").addEventListener("click", () => {
-      document.getElementById("equation").value = "x^2";
-      plotEquations(["x^2"]);
+      const defaultEqs = "x^2, sin(x), x^2 + y^2";
+      document.getElementById("equation").value = defaultEqs;
+      plotEquations(defaultEqs.split(",").map(e => e.trim()));
     });
+
+    // FIXED: The 'examples' element listener is removed as the element doesn't exist.
+    // If you add an "examples" dropdown in your HTML, you can restore this.
+  });
+
+  // --- END: Corrected JavaScript Block ---
   </script>
 </body>
 </html>
