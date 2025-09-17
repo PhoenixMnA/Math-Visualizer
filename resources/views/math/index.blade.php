@@ -24,6 +24,42 @@
         <button id="resetBtn" class="px-4 py-2 rounded bg-red-600 text-white">♻ Reset</button>
       </div>
     </div>
+    
+    <div class="p-4 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm space-y-4">
+    <h3 class="font-bold text-lg">💡 Quick Guide</h3>
+    
+    <div>
+        <h4 class="font-semibold text-md mb-2">📈 Plotting</h4>
+        <div class="pl-4 space-y-2">
+            <p><strong>How to Plot:</strong> Enter one or more equations separated by commas.</p>
+            <p><strong>2D vs. 3D Rule:</strong> Equations containing a 'y' variable are plotted in 3D. All others are plotted in 2D.</p>
+            <p><strong>Example:</strong> <code class="bg-gray-200 dark:bg-gray-700 p-1 rounded">x^2, sin(x), x^2+y^2</code></p>
+        </div>
+    </div>
+
+    <hr class="border-gray-300 dark:border-gray-600">
+
+    <div>
+        <h4 class="font-semibold text-md mb-2">🧮 Commands</h4>
+        <div class="pl-4 space-y-4">
+            <div>
+                <p class="font-semibold">Derivatives</p>
+                <p><strong>Format:</strong> <code class="bg-gray-200 dark:bg-gray-700 p-1 rounded">derivative(function, variable)</code></p>
+                <p><strong>Example:</strong> <code class="bg-gray-200 dark:bg-gray-700 p-1 rounded">derivative(x^3, x)</code></p>
+            </div>
+            <div>
+                 <p class="font-semibold">Integrals</p>
+                <p><strong>Format:</strong> <code class="bg-gray-200 dark:bg-gray-700 p-1 rounded">integral(function, variable)</code></p>
+                <p><strong>Example:</strong> <code class="bg-gray-200 dark:bg-gray-700 p-1 rounded">integral(2*x, x)</code></p>
+            </div>
+             <div>
+                 <p class="font-semibold">Simplify</p>
+                <p><strong>Format:</strong> <code class="bg-gray-200 dark:bg-gray-700 p-1 rounded">simplify(expression)</code></p>
+                <p><strong>Example:</strong> <code class="bg-gray-200 dark:bg-gray-700 p-1 rounded">simplify(x+x+2*y)</code></p>
+            </div>
+        </div>
+    </div>
+</div>
 
     <!-- Input Form -->
     <form id="equationForm" class="space-y-4">
