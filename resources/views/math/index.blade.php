@@ -22,6 +22,11 @@
       <div class="flex gap-3">
         <button id="darkToggle" class="px-4 py-2 rounded bg-gray-700 text-white">🌙 Dark</button>
         <button id="resetBtn" class="px-4 py-2 rounded bg-red-600 text-white">♻ Reset</button>
+        <form method="POST" action="{{ route('logout') }}">
+    @csrf
+    <button type="submit" id="darkToggle" class="px-4 py-2 rounded bg-gray-700 text-white">Logout</button>
+</form>
+
       </div>
     </div>
     
