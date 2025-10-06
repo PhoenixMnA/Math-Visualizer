@@ -43,6 +43,16 @@
                 {{ __('Log in') }}
             </x-primary-button>
         </div>
+        
         <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('register') }}">Register</a>
     </form>
+    <a href="{{ url('/auth/google') }}">
+    <button class="px-4 py-2 rounded bg-red-600 text-white">Login with Google</button>
+</a>
+
+<a href="{{ url('/auth/facebook') }}">
+    <button class="px-4 py-2 rounded bg-blue-600 text-white">Login with Facebook</button>
+</a>
+
 </x-guest-layout>
+

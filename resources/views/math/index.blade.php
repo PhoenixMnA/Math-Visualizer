@@ -25,7 +25,15 @@
         <form method="POST" action="{{ route('logout') }}">
     @csrf
     <button type="submit" id="darkToggle" class="px-4 py-2 rounded bg-gray-700 text-white">Logout</button>
-</form>
+    </form>
+    <div class="flex justify-end mb-4">
+    <a href="{{ route('forum.index') }}" 
+       class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+        🗨 Go to Forum
+    </a>
+</div>
+
+
 
       </div>
     </div>
