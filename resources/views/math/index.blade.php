@@ -18,7 +18,7 @@
   <div class="container mx-auto p-6 space-y-6">
     <!-- Header -->
     <div class="flex justify-between items-center">
-      <h1 class="text-3xl font-bold">🌀 Math Visualizer</h1>
+      <h1 class="text-3xl font-bold">🌀 Mathvix</h1>
       <div class="flex gap-3">
         <button id="darkToggle" class="px-4 py-2 rounded bg-gray-700 text-white">🌙 Dark</button>
         <button id="resetBtn" class="px-4 py-2 rounded bg-red-600 text-white">♻ Reset</button>
