@@ -8,20 +8,21 @@ use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
-    public function index($id)
-    {
-        // Find the category by ID
-        $category = Category::findOrFail($id);
+   public function index($id)
+{
+    // Find the category
+    $category = \App\Models\Category::findOrFail($id);
 
-        // Get posts under that category, with their authors
-        $posts = Post::where('category_id', $id)
-            ->with('user')
-            ->latest()
-            ->get();
+    // Fetch posts with user and replies count
+    $posts = \App\Models\Post::where('category_id', $id)
+        ->with(['user'])
+        ->withCount('replies') // 👈 Add this line
+        ->latest()
+        ->get();
 
-        // Return the view and pass data
-        return view('forum.posts', compact('category', 'posts'));
-    }
+    return view('forum.posts', compact('category', 'posts'));
+}
+
 
     public function show($id)
     {

@@ -9,8 +9,12 @@ class ForumController extends Controller
 {
     // Show all forum categories
     public function index()
-    {
-        $categories = Category::all();
-        return view('forum.index', compact('categories'));
-    }
+{
+    // Fetch all categories with a count of their posts
+    $categories = \App\Models\Category::withCount('posts')->get();
+
+    return view('forum.index', compact('categories'));
 }
+
+    }
+
