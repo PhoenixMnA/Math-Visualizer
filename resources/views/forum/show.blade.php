@@ -2,23 +2,46 @@
 
 @section('content')
 <div class="max-w-3xl mx-auto p-6">
-    <h1 class="text-3xl font-bold mb-2">{{ $post->title }}</h1>
-    <p class="text-gray-500 mb-4">Posted by {{ $post->user->name ?? 'Unknown' }} on {{ $post->created_at->format('M d, Y') }}</p>
-    <div class="bg-white p-4 rounded shadow mb-6 prose">
-        <p>{{ $post->body }}</p>
+    <div class="bg-[#1e293b] p-6 rounded-xl shadow mb-8">
+        <h1 class="text-3xl font-bold text-white mb-2">{{ $post->title }}</h1>
+        <p class="text-gray-400 mb-4">Posted by {{ $post->user->name ?? 'Unknown' }} on {{ $post->created_at->format('M d, Y') }}</p>
+        <div class="prose prose-invert">
+            <p class="text-gray-200">{{ $post->body }}</p>
+        </div>
+
+        @if(auth()->check() && auth()->id() === $post->user_id)
+            <form action="{{ route('posts.destroy', $post->id) }}" method="POST" class="mt-4">
+                @csrf
+                @method('DELETE')
+                <button type="submit"
+                        class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 transition-colors">
+                    Delete Post
+                </button>
+            </form>
+        @endif
     </div>
 
-    <h2 class="text-2xl font-semibold mb-4">Replies</h2>
+    <h2 class="text-2xl font-semibold mb-4 text-white">Replies</h2>
 
     @if ($post->replies->isEmpty())
-        {{-- This is the correct content for the @if block --}}
-        <p class="text-gray-600">Be the first to reply!</p>
+        <p class="text-gray-400">Be the first to reply!</p>
     @else
         <ul class="space-y-4">
             @foreach ($post->replies as $reply)
-                <li class="border p-3 rounded bg-gray-50">
-                    <p>{{ $reply->body }}</p>
-                    <small class="text-gray-500">by {{ $reply->user->name ?? 'Unknown' }} &middot; {{ $reply->created_at->diffForHumans() }}</small>
+                <li class="bg-[#1e293b] p-4 rounded-lg shadow">
+                    <p class="text-gray-100">{{ $reply->body }}</p>
+                    <small class="text-gray-400 block mt-1">by {{ $reply->user->name ?? 'Unknown' }}</small>
+
+                    @if(auth()->check() && auth()->id() === $reply->user_id)
+                        <form action="{{ route('replies.destroy', $reply->id) }}" method="POST" class="mt-2">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    class="bg-red-600 text-white px-2 py-1 rounded text-sm hover:bg-red-700 transition-colors">
+                                Delete Reply
+                            </button>
+                        </form>
+                    @endif
                 </li>
             @endforeach
         </ul>
@@ -29,19 +52,16 @@
             <form action="{{ route('replies.store', $post) }}" method="POST">
                 @csrf
                 <input type="hidden" name="post_id" value="{{ $post->id }}">
-                <div class="mb-4">
-                    <label for="body" class="block text-gray-700 font-bold mb-2">Your Reply:</label>
-                    <textarea name="body" id="body" rows="4" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('body') border-red-500 @enderror" required></textarea>
-                    @error('body')
-                        <p class="text-red-500 text-xs italic mt-2">{{ $message }}</p>
-                    @enderror
-                </div>
-                <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                <textarea name="body" id="body" rows="4"
+                          class="w-full p-3 bg-[#0f172a] border border-gray-600 rounded-lg text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                          placeholder="Write your reply..." required></textarea>
+                <button type="submit"
+                        class="mt-3 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors">
                     Post Reply
                 </button>
             </form>
         @else
-            <p><a href="{{ route('login') }}" class="text-blue-500 hover:underline">Log in</a> to post a reply.</p>
+            <p class="text-gray-400"><a href="{{ route('login') }}" class="text-blue-400 hover:underline">Log in</a> to post a reply.</p>
         @endauth
     </div>
 </div>

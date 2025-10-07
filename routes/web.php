@@ -41,5 +41,15 @@ Route::middleware('auth')->group(function () {
     // Replies
     Route::post('/forum/post/{id}/reply', [ReplyController::class, 'store'])->name('replies.store');
     Route::post('/forum/post/{post}/replies', [ReplyController::class, 'store'])->name('replies.store')->middleware('auth');
+    // Post deletion
+    Route::delete('/forum/post/{id}', [App\Http\Controllers\PostController::class, 'destroy'])
+    ->name('posts.destroy')
+    ->middleware('auth');
+
+// Reply deletion
+    Route::delete('/forum/reply/{id}', [App\Http\Controllers\ReplyController::class, 'destroy'])
+    ->name('replies.destroy')
+    ->middleware('auth');
+
 
 });

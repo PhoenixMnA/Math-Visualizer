@@ -45,6 +45,10 @@ class PostController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
 
+        
+
+
+
         // Create the new post
         $post = Post::create([
             'title' => $validated['title'],
@@ -57,4 +61,19 @@ class PostController extends Controller
         return redirect()->route('posts.index', $post->category_id)
                          ->with('success', 'Your post has been created!');
     }
+    public function destroy($id)
+{
+    $post = Post::findOrFail($id);
+
+    // Only the author can delete their own post
+    if ($post->user_id !== auth()->id()) {
+        abort(403, 'Unauthorized action.');
+    }
+
+    $post->delete();
+
+    return redirect()->route('forum.index')->with('success', 'Post deleted successfully.');
+}
+
+
 }

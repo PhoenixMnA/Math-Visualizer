@@ -26,4 +26,18 @@ class ReplyController extends Controller
         // 3. Redirect back to the post page with a success message
         return back()->with('success', 'Your reply has been posted!');
     }
+    public function destroy($id)
+{
+    $reply = \App\Models\Reply::findOrFail($id);
+
+    // Only the author can delete their own reply
+    if ($reply->user_id !== auth()->id()) {
+        abort(403, 'Unauthorized action.');
+    }
+
+    $reply->delete();
+
+    return redirect()->back()->with('success', 'Reply deleted successfully.');
+}
+
 }
