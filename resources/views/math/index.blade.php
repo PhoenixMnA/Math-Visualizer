@@ -33,7 +33,27 @@
        class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
         🗨 Go to Forum
     </a>
-</div>
+      </div>
+
+
+  <!-- Mobile menu toggle -->
+  <button id="menuToggle" class="sm:hidden px-3 py-2 rounded bg-gray-700 text-white">☰ Menu</button>
+
+  <!-- Mobile dropdown -->
+  <div id="mobileMenu" class="hidden flex flex-col w-full sm:hidden gap-2 mt-2">
+    <button id="darkToggleMobile" class="px-4 py-2 rounded bg-gray-700 text-white">🌙 Dark</button>
+    <button id="resetBtnMobile" class="px-4 py-2 rounded bg-red-600 text-white">♻ Reset</button>
+
+    <form method="POST" action="{{ route('logout') }}">
+      @csrf
+      <button type="submit" class="px-4 py-2 rounded bg-gray-700 text-white">Logout</button>
+    </form>
+
+    <a href="{{ route('forum.index') }}" 
+       class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+      🗨 Go to Forum
+    </a>
+  </div>
 
 
 
