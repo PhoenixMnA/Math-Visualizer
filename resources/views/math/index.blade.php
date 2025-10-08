@@ -17,27 +17,44 @@
 </head>
 <body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition">
 
-  <div class="container mx-auto p-6 space-y-6">
+<div class="container mx-auto px-4 sm:px-6 py-4 space-y-6">
     <!-- Header -->
-    <div class="flex justify-between items-center">
-      <h1 class="text-3xl font-bold">🌀 Mathvix</h1>
-      <div class="flex gap-3">
-        <button id="darkToggle" class="px-4 py-2 rounded bg-gray-700 text-white">🌙 Dark</button>
-        <button id="resetBtn" class="px-4 py-2 rounded bg-red-600 text-white">♻ Reset</button>
-        <form method="POST" action="{{ route('logout') }}">
-    @csrf
-    <button type="submit" id="darkToggle" class="px-4 py-2 rounded bg-gray-700 text-white">Logout</button>
-    </form>
-    <div class="flex justify-end mb-4">
-    <a href="{{ route('forum.index') }}" 
-       class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-        🗨 Go to Forum
-    </a>
-      </div>
+    <!-- Header -->
+<header class="flex flex-wrap justify-between items-center gap-3">
+  <h1 class="text-3xl font-bold">🌀 Mathvix</h1>
 
-      </div>
-    </div>
-    
+  <!-- Desktop buttons -->
+  <div class="hidden sm:flex gap-3 items-center">
+
+    <form method="POST" action="{{ route('logout') }}">
+      @csrf
+      <button type="submit" class=" w-full sm:w-auto px-4 py-2 text-sm sm:text-base rounded bg-red-700 text-white">Logout</button>
+    </form>
+
+    <a href="{{ route('forum.index') }}" 
+       class="  bg-blue-500 hover:bg-blue-600 text-white font-bold w-full sm:w-auto py-2 px-4 text-sm sm:text-base rounded">
+      🗨 Go to Forum
+    </a>
+  </div>
+
+  <!-- Mobile menu toggle -->
+  <button id="menuToggle" class="sm:hidden px-3 py-2 rounded bg-gray-700 text-white">☰ Menu</button>
+
+  <!-- Mobile dropdown -->
+  <div id="mobileMenu" class="hidden flex flex-col w-full sm:hidden gap-2 mt-2">
+
+    <form method="POST" action="{{ route('logout') }}">
+      @csrf
+      <button type="submit" class=" w-full sm:w-auto px-4 py-2  text-sm sm:text-base rounded bg-red-700 text-white">Logout</button>
+    </form>
+
+    <a href="{{ route('forum.index') }}" 
+       class="bg-blue-500 hover:bg-blue-600 text-white font-bold w-full sm:w-auto  py-2 px-4 text-sm sm:text-base rounded">
+      🗨 Go to Forum
+    </a>
+  </div>
+</header>
+
     <div class="p-4 rounded-lg bg-gray-100 dark:bg-gray-800 text-sm space-y-4">
     <h3 class="font-bold text-lg">💡 Quick Guide</h3>
     
@@ -83,7 +100,7 @@
 
     
 
-      <button type="submit" class="px-4 py-2 rounded bg-green-600 text-white">📈 Plot</button>
+      <button type="submit" class=" w-full sm:w-auto px-4 py-2 text-sm sm:text-base rounded bg-green-600 text-white">📈 Plot</button>
     </form>
     <!-- Results Panel -->
     <div id="resultsBox" class="p-4 border rounded bg-gray-100 dark:bg-gray-800 dark:border-gray-700">
@@ -93,7 +110,7 @@
   </div>
 
     <!-- Graphs -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
       <div>
         <h2 class="text-lg font-semibold mb-2">📉 2D Plot</h2>
         <div id="plot2D" class="w-full h-[500px] border rounded bg-white dark:bg-gray-800"></div>
@@ -265,6 +282,14 @@ document.getElementById("equationForm").addEventListener("submit", e => {
   });
 
   // --- END: Corrected JavaScript Block ---
+  // Mobile menu toggle
+const menuToggle = document.getElementById('menuToggle');
+const mobileMenu = document.getElementById('mobileMenu');
+
+menuToggle.addEventListener('click', () => {
+  mobileMenu.classList.toggle('hidden');
+});
+
   </script>
 </body>
 </html>
