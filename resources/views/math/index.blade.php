@@ -38,7 +38,7 @@
   </div>
 
   <!-- Mobile menu toggle -->
-  <button id="menuToggle" class="sm:hidden px-3 py-2 rounded bg-gray-700 text-white">☰ Menu</button>
+  <button id="menuToggle" class="sm:hidden px-3 py-2 rounded bg-gray-700 text-white">☰ </button>
 
   <!-- Mobile dropdown -->
   <div id="mobileMenu" class="hidden flex flex-col w-full sm:hidden gap-2 mt-2">
