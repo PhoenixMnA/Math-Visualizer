@@ -51,10 +51,7 @@ Route::get('/auth/google/callback', function () {
     Auth::login($user);
 
     return redirect('/math');
-          } catch (\Exception $e) {
-        \Log::error('Google OAuth error: ' . $e->getMessage());
-        return redirect('/login')->with('error', 'Unable to login with Google.');
-    }
+        
 })->name('google.callback');
 
 /*
