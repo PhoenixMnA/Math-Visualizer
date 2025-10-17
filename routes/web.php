@@ -10,6 +10,8 @@ use App\Http\Controllers\ForumController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ReplyController;
 use App\Models\User;
+use Illuminate\Support\Str;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -34,8 +36,9 @@ Route::get('/auth/google', function () {
     return Socialite::driver('google')->redirect();
 })->name('google.redirect');
 
+// Use stateless() temporarily to avoid InvalidStateException
 Route::get('/auth/google/callback', function () {
-    $googleUser = Socialite::driver('google')->user();
+    $googleUser = Socialite::driver('google')->stateless()->user();
 
     $user = User::firstOrCreate(
         ['email' => $googleUser->getEmail()],
@@ -48,6 +51,10 @@ Route::get('/auth/google/callback', function () {
     Auth::login($user);
 
     return redirect('/math');
+          } catch (\Exception $e) {
+        \Log::error('Google OAuth error: ' . $e->getMessage());
+        return redirect('/login')->with('error', 'Unable to login with Google.');
+    }
 })->name('google.callback');
 
 /*
